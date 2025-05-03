@@ -1,3 +1,34 @@
 {
-  "example": "This is where the tweet templates will go."
+  "都市裁判くん": {
+    "template": "【審理ログNo.{log_no}】\nあなたが見逃した都市伝説「{title}」について、裁判が開かれました。\n\n証言は{testimony_quality}でしたが、結論は出ました。\n\n▶ 判決：{verdict}\n\n#裁判ノベル #夢構造 #AI創作\n🔗 {link}\n🖼 {image}",
+    "variables": {
+      "log_no": "{AUTO_LOG_NO}",
+      "title": "{AUTO_TITLE}",
+      "testimony_quality": "{AUTO_QUALITY}",
+      "verdict": "{AUTO_VERDICT}",
+      "link": "{AUTO_LINK}",
+      "image": "{AUTO_IMAGE}"
+    }
+  },
+  "ささやきノベル": {
+    "template": "「{intro}」\n\n▶ 短編ノベル：『{title}』\n\n{ending_line}\n\n#都市伝説 #深夜ノベル #CHIMERA\n🔗 {link}\n🖼 {image}",
+    "variables": {
+      "intro": "{AUTO_INTRO}",
+      "title": "{AUTO_TITLE}",
+      "ending_line": "{AUTO_ENDING}",
+      "link": "{AUTO_LINK}",
+      "image": "{AUTO_IMAGE}"
+    }
+  },
+  "観察者Z": {
+    "template": "【観測ログ{log_no}】\n\n現象記録：「{phenomenon}」\n\n※{annotation_1}\n※{annotation_2}\n\n#思考実験 #構造変異ノベル #観察対象\n🔗 {link}\n🖼 {image}",
+    "variables": {
+      "log_no": "{AUTO_LOG_NO}",
+      "phenomenon": "{AUTO_PHENOMENON}",
+      "annotation_1": "{AUTO_ANN1}",
+      "annotation_2": "{AUTO_ANN2}",
+      "link": "{AUTO_LINK}",
+      "image": "{AUTO_IMAGE}"
+    }
+  }
 }
