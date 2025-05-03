@@ -1,4 +1,3 @@
-
 import os
 import time
 import json
@@ -7,10 +6,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service 
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
-# 曜日によってBot人格を切り替える
+# Bot人格を曜日で切り替える
 def get_bot_identity():
     weekday = datetime.utcnow().weekday()
     if weekday in [0, 2, 4]:  # 月水金
@@ -39,24 +38,24 @@ def post_to_twitter(username, password, content):
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
     
+    # ログイン
     driver.get("https://twitter.com/login")
     time.sleep(5)
-
-    username_input = driver.find_element(By.NAME, "text")
-    username_input.send_keys(username)
-    username_input.send_keys(Keys.RETURN)
+    driver.find_element(By.NAME, "text").send_keys(username, Keys.RETURN)
     time.sleep(3)
-
-    password_input = driver.find_element(By.NAME, "password")
-    password_input.send_keys(password)
-    password_input.send_keys(Keys.RETURN)
+    driver.find_element(By.NAME, "password").send_keys(password, Keys.RETURN)
     time.sleep(5)
 
-    tweet_box = driver.find_element(By.CSS_SELECTOR, "div[aria-label='ツイート内容を入力']")
+    # ツイート作成ページへ移動
+    driver.get("https://twitter.com/compose/tweet")
+    time.sleep(5)
+
+    # 投稿
+    tweet_box = driver.find_element(By.CSS_SELECTOR, "div[role='textbox']")
+    tweet_box.click()
     tweet_box.send_keys(content)
     time.sleep(2)
-
-    tweet_button = driver.find_element(By.XPATH, "//div[@data-testid='tweetButtonInline']")
+    tweet_button = driver.find_element(By.XPATH, "//div[@data-testid='tweetButton']")
     tweet_button.click()
     time.sleep(5)
 
