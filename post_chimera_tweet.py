@@ -1,13 +1,14 @@
 import os
 import time
 import json
-import urllib.parse
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+import urllib.parse
 
 def get_bot_identity():
     weekday = datetime.utcnow().weekday()
@@ -21,10 +22,10 @@ def get_bot_identity():
 def load_template(bot_key):
     with open("templates.json", "r", encoding="utf-8") as f:
         templates = json.load(f)
-    template_data = templates.get(bot_key)
-    if not template_data:
+    data = templates.get(bot_key)
+    if not data:
         raise Exception("Bot template not found.")
-    return template_data["template"].format(**template_data["variables"])
+    return data["template"].format(**data["variables"])
 
 def post_to_twitter(username, password, content):
     chrome_options = Options()
@@ -38,17 +39,19 @@ def post_to_twitter(username, password, content):
     # ログイン
     driver.get("https://twitter.com/login")
     time.sleep(5)
-    driver.find_element(By.NAME, "text").send_keys(username, webdriver.common.keys.Keys.RETURN)
+    driver.find_element(By.NAME, "text").send_keys(username, Keys.RETURN)
     time.sleep(3)
-    driver.find_element(By.NAME, "password").send_keys(password, webdriver.common.keys.Keys.RETURN)
+    # パスワード欄を input[type="password"] で取得
+    pwd = driver.find_element(By.CSS_SELECTOR, 'input[type="password"]')
+    pwd.send_keys(password, Keys.RETURN)
     time.sleep(5)
 
-    # Web Intent URL で投稿ページへ
+    # Web Intent で投稿ページへ
     intent_url = "https://twitter.com/intent/tweet?text=" + urllib.parse.quote(content)
     driver.get(intent_url)
     time.sleep(5)
 
-    # Intent の『ツイート』ボタンをクリック
+    # 投稿ボタンをクリック
     btn = driver.find_element(By.CSS_SELECTOR, "[data-testid='tweetButton']")
     btn.click()
     time.sleep(5)
@@ -58,8 +61,6 @@ def post_to_twitter(username, password, content):
 if __name__ == "__main__":
     key, bot_key = get_bot_identity()
     content = load_template(bot_key)
-
     username = os.environ[f"TWITTER_USERNAME_{key}"]
     password = os.environ[f"TWITTER_PASSWORD_{key}"]
-
     post_to_twitter(username, password, content)
