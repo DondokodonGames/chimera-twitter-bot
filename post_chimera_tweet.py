@@ -37,8 +37,8 @@ def post_to_twitter(username, password, content):
 
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
-    
-    # ログイン
+
+    # ログイン処理
     driver.get("https://twitter.com/login")
     time.sleep(5)
     driver.find_element(By.NAME, "text").send_keys(username, Keys.RETURN)
@@ -50,12 +50,22 @@ def post_to_twitter(username, password, content):
     driver.get("https://twitter.com/compose/tweet")
     time.sleep(5)
 
-    # 投稿
-    tweet_box = driver.find_element(By.CSS_SELECTOR, "div[role='textbox']")
+    # ツイート入力欄の取得（複数セレクタで対応）
+    try:
+        tweet_box = driver.find_element(By.CSS_SELECTOR, "div[role='textbox']")
+    except Exception:
+        tweet_box = driver.find_element(By.CSS_SELECTOR, "div[aria-label='Tweet text']")
+
     tweet_box.click()
     tweet_box.send_keys(content)
     time.sleep(2)
-    tweet_button = driver.find_element(By.XPATH, "//div[@data-testid='tweetButton']")
+
+    # ツイートボタンの取得（複数テストID対応）
+    try:
+        tweet_button = driver.find_element(By.XPATH, "//div[@data-testid='tweetButton']")
+    except Exception:
+        tweet_button = driver.find_element(By.XPATH, "//div[@data-testid='tweetButtonInline']")
+
     tweet_button.click()
     time.sleep(5)
 
