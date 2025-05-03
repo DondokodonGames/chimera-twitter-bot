@@ -12,11 +12,11 @@ from webdriver_manager.chrome import ChromeDriverManager
 # Bot人格を曜日で切り替える
 def get_bot_identity():
     weekday = datetime.utcnow().weekday()
-    if weekday in [0, 2, 4]:  # 月水金
+    if weekday in [0, 2, 4]:
         return 'A', '都市裁判くん'
-    elif weekday in [1, 3, 5]:  # 火木土
+    elif weekday in [1, 3, 5]:
         return 'B', 'ささやきノベル'
-    else:  # 日
+    else:
         return 'C', '観察者Z'
 
 # テンプレート読み込みと本文生成
@@ -38,7 +38,7 @@ def post_to_twitter(username, password, content):
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    # ログイン処理
+    # ログイン
     driver.get("https://twitter.com/login")
     time.sleep(5)
     driver.find_element(By.NAME, "text").send_keys(username, Keys.RETURN)
@@ -50,29 +50,24 @@ def post_to_twitter(username, password, content):
     driver.get("https://twitter.com/compose/tweet")
     time.sleep(5)
 
-    # ツイート入力欄の取得（複数セレクタで対応）
-    try:
-        tweet_box = driver.find_element(By.CSS_SELECTOR, "div[role='textbox']")
-    except Exception:
-        tweet_box = driver.find_element(By.CSS_SELECTOR, "div[aria-label='Tweet text']")
-
-    tweet_box.click()
-    tweet_box.send_keys(content)
+    # 投稿：textarea で取得
+    textarea = driver.find_element(By.TAG_NAME, "textarea")
+    textarea.click()
+    textarea.send_keys(content)
     time.sleep(2)
 
-    # ツイートボタンの取得（複数テストID対応）
+    # 投稿ボタンを取得してクリック
+    # data-testid="tweetButton" または tweetButtonInline のどちらか
     try:
-        tweet_button = driver.find_element(By.XPATH, "//div[@data-testid='tweetButton']")
-    except Exception:
-        tweet_button = driver.find_element(By.XPATH, "//div[@data-testid='tweetButtonInline']")
-
-    tweet_button.click()
+        button = driver.find_element(By.CSS_SELECTOR, "[data-testid='tweetButton']")
+    except:
+        button = driver.find_element(By.CSS_SELECTOR, "[data-testid='tweetButtonInline']")
+    button.click()
     time.sleep(5)
 
     driver.quit()
 
 if __name__ == "__main__":
-    bot_key_map = {"A": "都市裁判くん", "B": "ささやきノベル", "C": "観察者Z"}
     key, bot_key = get_bot_identity()
     content = load_template(bot_key)
 
