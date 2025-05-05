@@ -1,0 +1,26 @@
+name: Build and Deploy CHIMERA Novels
+
+on:
+  push:
+    paths:
+      - 'templates.json'
+      - 'novel_templates/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install jinja2
+      - name: Build novel HTML
+        run: python build_novel_html.py
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
