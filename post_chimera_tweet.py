@@ -16,10 +16,10 @@ def get_bot_identity():
 def load_template(key):
     with open("templates.json", "r", encoding="utf-8") as f:
         data = json.load(f)
-    tpl = data.get(bot_key)
-    if not tpl:
-        raise RuntimeError(f"No template for {bot_key}")
-    return tpl["template"].format(**tpl["variables"])
+    template_data = data.get(bot_key)
+    if not template_data:
+        raise RuntimeError(f"No template for '{bot_key}'")
+    return template_data["template"].format(**template_data["variables"])
 
 # Tweepy で投稿
 def post_tweet_v2(bot_key, content):
@@ -34,16 +34,16 @@ def post_tweet_v2(bot_key, content):
         consumer_key=api_key,
         consumer_secret=api_secret,
         access_token=access_token,
-        access_token_secret=access_secret,
+        access_token_secret=access_secret
     )
-
-    # v2エンドポイントでツイート作成
     response = client.create_tweet(text=content)
-    if response.errors:
+    if hasattr(response, "errors") and response.errors:
         raise RuntimeError(f"Tweet failed: {response.errors}")
-    print(f"[Bot {bot_key}] Tweet ID: {response.data['id']}")
+    tweet_id = response.data.get("id")
+    print(f"[Bot {bot_key}] Tweet posted. ID={tweet_id}")
 
 if __name__ == "__main__":
-    key, bot_name = get_bot_identity()
-    text = load_template(bot_name)
-    post_tweet_v2(key, text)
+    bot_key, bot_name = get_bot_identity()
+    # 修正: load_templateにはBotキー(bot_key)を渡す
+    text = load_template(bot_key)
+    post_tweet_v2(bot_key, text)
