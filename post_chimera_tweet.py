@@ -1,12 +1,11 @@
-# post_chimera_tweet.py 修正版（変数名の不一致を解消）
-
+# 修正版 post_chimera_tweet.py
 import os
 import json
 from datetime import datetime
 import tweepy
 
 def get_bot_identity():
-    """曜日ごとにBotを切り替え：A/B/C"""
+    """曜日ごとにBotを切り替え：A/B/Cと名称"""
     wd = datetime.utcnow().weekday()
     if wd in [0, 2, 4]:
         return 'A', '都市裁判くん'
@@ -14,13 +13,13 @@ def get_bot_identity():
         return 'B', 'ささやきノベル'
     return 'C', '観察者Z'
 
-def load_template(bot_key):
-    """templates.jsonからBotキーに対応したテンプレートを読み込む"""
+def load_template(bot_name):
+    """templates.jsonからBot名に対応したテンプレートを読み込む"""
     with open("templates.json", "r", encoding="utf-8") as f:
         data = json.load(f)
-    template_data = data.get(bot_key)
+    template_data = data.get(bot_name)
     if not template_data:
-        raise RuntimeError(f"No template for '{bot_key}'")
+        raise RuntimeError(f"No template for '{bot_name}'")
     return template_data["template"].format(**template_data["variables"])
 
 def post_tweet_v2(bot_key, content):
@@ -44,6 +43,6 @@ def post_tweet_v2(bot_key, content):
 
 if __name__ == "__main__":
     bot_key, bot_name = get_bot_identity()
-    # 修正: load_templateにはBotキー(bot_key)を渡す
-    text = load_template(bot_key)
+    # 修正: load_templateにはBot名(bot_name)を渡す
+    text = load_template(bot_name)
     post_tweet_v2(bot_key, text)
