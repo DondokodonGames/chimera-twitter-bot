@@ -52,8 +52,8 @@ BOT_PROMPTS = {
 }
 
 def generate_for_bot(bot_name, prompt_conf):
-    """OpenAI API呼び出しで指定Bot用JSONを生成"""
-    resp = openai.ChatCompletion.create(
+    """OpenAI v1.0+ の Chat Completions API で指定Bot用JSONを生成"""
+    response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": prompt_conf["system"]},
@@ -62,33 +62,29 @@ def generate_for_bot(bot_name, prompt_conf):
         temperature=0.8,
         max_tokens=200
     )
-    text = resp.choices[0].message.content.strip()
+    text = response.choices[0].message.content.strip()
     try:
         return json.loads(text)
     except json.JSONDecodeError:
-        raise RuntimeError(f"{bot_name}のJSON解析に失敗しました:\n{text}")
+        raise RuntimeError(f"{bot_name} の JSON 解析に失敗しました:\n{text}")
 
 def main():
-    # templates.json 読み込み
     tpl_path = "templates.json"
     with open(tpl_path, "r", encoding="utf-8") as f:
         data = json.load(f)
-    updated = False
 
-    # Botごとに変数生成
+    updated = False
     for bot_name, conf in BOT_PROMPTS.items():
         if bot_name not in data:
             print(f"Warning: templates.json に {bot_name} キーがありません")
             continue
         print(f"[{bot_name}] 変数生成中…")
         vars_json = generate_for_bot(bot_name, conf)
-        # templates.json 内の variables を上書き
         data[bot_name]["variables"].update(vars_json)
-        print(f"[{bot_name}] 生成結果:", vars_json)
+        print(f"[{bot_name}] 生成結果: {vars_json}")
         updated = True
 
     if updated:
-        # 上書き保存
         with open(tpl_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         print("templates.json を更新しました。")
