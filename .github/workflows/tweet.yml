@@ -24,16 +24,16 @@ jobs:
 
       - name: Run CHIMERA tweet
         env:
-          TW_API_KEY_A:     ${{ secrets.TW_API_KEY_A }}
-          TW_API_SECRET_A:  ${{ secrets.TW_API_SECRET_A }}
-          TW_ACCESS_TOKEN_A:${{ secrets.TW_ACCESS_TOKEN_A }}
-          TW_ACCESS_SECRET_A:${{ secrets.TW_ACCESS_SECRET_A }}
-          TW_API_KEY_B:     ${{ secrets.TW_API_KEY_B }}
-          TW_API_SECRET_B:  ${{ secrets.TW_API_SECRET_B }}
-          TW_ACCESS_TOKEN_B:${{ secrets.TW_ACCESS_TOKEN_B }}
-          TW_ACCESS_SECRET_B:${{ secrets.TW_ACCESS_SECRET_B }}
-          TW_API_KEY_C:     ${{ secrets.TW_API_KEY_C }}
-          TW_API_SECRET_C:  ${{ secrets.TW_API_SECRET_C }}
-          TW_ACCESS_TOKEN_C:${{ secrets.TW_ACCESS_TOKEN_C }}
-          TW_ACCESS_SECRET_C:${{ secrets.TW_ACCESS_SECRET_C }}
+          TW_API_KEY_A:       ${{ secrets.TW_API_KEY_A }}
+          TW_API_SECRET_A:    ${{ secrets.TW_API_SECRET_A }}
+          TW_ACCESS_TOKEN_A:  ${{ secrets.TW_ACCESS_TOKEN_A }}
+          TW_ACCESS_SECRET_A: ${{ secrets.TW_ACCESS_SECRET_A }}
+          TW_API_KEY_B:       ${{ secrets.TW_API_KEY_B }}
+          TW_API_SECRET_B:    ${{ secrets.TW_API_SECRET_B }}
+          TW_ACCESS_TOKEN_B:  ${{ secrets.TW_ACCESS_TOKEN_B }}
+          TW_ACCESS_SECRET_B: ${{ secrets.TW_ACCESS_SECRET_B }}
+          TW_API_KEY_C:       ${{ secrets.TW_API_KEY_C }}
+          TW_API_SECRET_C:    ${{ secrets.TW_API_SECRET_C }}
+          TW_ACCESS_TOKEN_C:  ${{ secrets.TW_ACCESS_TOKEN_C }}
+          TW_ACCESS_SECRET_C: ${{ secrets.TW_ACCESS_SECRET_C }}
         run: python post_chimera_tweet.py
