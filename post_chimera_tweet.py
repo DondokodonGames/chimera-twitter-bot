@@ -14,25 +14,36 @@ def get_bot_identity():
 
 # テンプレ読み込み
 def load_template(key):
-    data = json.load(open("templates.json","r",encoding="utf-8"))
-    tpl = data.get(key)
+    with open("templates.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
+    tpl = data.get(bot_key)
     if not tpl:
-        raise RuntimeError(f"No template for {key}")
+        raise RuntimeError(f"No template for {bot_key}")
     return tpl["template"].format(**tpl["variables"])
 
 # Tweepy で投稿
-def post_tweet(bot_key, content):
-    prefix = f"TW_API_KEY_{bot_key}"
-    auth = tweepy.OAuth1UserHandler(
-        os.environ[f"{prefix}"],
-        os.environ[f"TW_API_SECRET_{bot_key}"],
-        os.environ[f"TW_ACCESS_TOKEN_{bot_key}"],
-        os.environ[f"TW_ACCESS_SECRET_{bot_key}"]
+def post_tweet_v2(bot_key, content):
+    # 環境変数から認証情報取得
+    api_key        = os.environ[f"TW_API_KEY_{bot_key}"]
+    api_secret     = os.environ[f"TW_API_SECRET_{bot_key}"]
+    access_token   = os.environ[f"TW_ACCESS_TOKEN_{bot_key}"]
+    access_secret  = os.environ[f"TW_ACCESS_SECRET_{bot_key}"]
+
+    # Clientインスタンス（API v2）
+    client = tweepy.Client(
+        consumer_key=api_key,
+        consumer_secret=api_secret,
+        access_token=access_token,
+        access_token_secret=access_secret,
     )
-    api = tweepy.API(auth)
-    api.update_status(content)
+
+    # v2エンドポイントでツイート作成
+    response = client.create_tweet(text=content)
+    if response.errors:
+        raise RuntimeError(f"Tweet failed: {response.errors}")
+    print(f"[Bot {bot_key}] Tweet ID: {response.data['id']}")
 
 if __name__ == "__main__":
-    key, bot = get_bot_identity()
-    text = load_template(bot)
-    post_tweet(key, text)
+    key, bot_name = get_bot_identity()
+    text = load_template(bot_name)
+    post_tweet_v2(key, text)
