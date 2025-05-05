@@ -5,6 +5,10 @@ on:
     - cron: '0 9 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   tweet:
     runs-on: ubuntu-latest
@@ -22,7 +26,12 @@ jobs:
         run: |
           pip install tweepy
 
-      - name: Run CHIMERA tweet
+      - name: Generate image for novel
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python generate_chimera_image.py
+
+      - name: Run CHIMERA tweet with media
         env:
           TW_API_KEY_A:       ${{ secrets.TW_API_KEY_A }}
           TW_API_SECRET_A:    ${{ secrets.TW_API_SECRET_A }}
