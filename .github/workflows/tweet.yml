@@ -8,20 +8,32 @@ on:
 jobs:
   tweet:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+
       - name: Install dependencies
-        run: pip install tweepy
-      - name: Run bot script
+        run: |
+          pip install tweepy
+
+      - name: Run CHIMERA tweet
         env:
-          TWITTER_USERNAME_A: ${{ secrets.TWITTER_USERNAME_A }}
-          TWITTER_PASSWORD_A: ${{ secrets.TWITTER_PASSWORD_A }}
-          TWITTER_USERNAME_B: ${{ secrets.TWITTER_USERNAME_B }}
-          TWITTER_PASSWORD_B: ${{ secrets.TWITTER_PASSWORD_B }}
-          TWITTER_USERNAME_C: ${{ secrets.TWITTER_USERNAME_C }}
-          TWITTER_PASSWORD_C: ${{ secrets.TWITTER_PASSWORD_C }}
+          TW_API_KEY_A:     ${{ secrets.TW_API_KEY_A }}
+          TW_API_SECRET_A:  ${{ secrets.TW_API_SECRET_A }}
+          TW_ACCESS_TOKEN_A:${{ secrets.TW_ACCESS_TOKEN_A }}
+          TW_ACCESS_SECRET_A:${{ secrets.TW_ACCESS_SECRET_A }}
+          TW_API_KEY_B:     ${{ secrets.TW_API_KEY_B }}
+          TW_API_SECRET_B:  ${{ secrets.TW_API_SECRET_B }}
+          TW_ACCESS_TOKEN_B:${{ secrets.TW_ACCESS_TOKEN_B }}
+          TW_ACCESS_SECRET_B:${{ secrets.TW_ACCESS_SECRET_B }}
+          TW_API_KEY_C:     ${{ secrets.TW_API_KEY_C }}
+          TW_API_SECRET_C:  ${{ secrets.TW_API_SECRET_C }}
+          TW_ACCESS_TOKEN_C:${{ secrets.TW_ACCESS_TOKEN_C }}
+          TW_ACCESS_SECRET_C:${{ secrets.TW_ACCESS_SECRET_C }}
         run: python post_chimera_tweet.py
