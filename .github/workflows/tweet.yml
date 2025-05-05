@@ -25,6 +25,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install tweepy openai pillow
+          
+      - name: Generate Chimera story v
+        env:
+         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python generate_chimera_story.py
 
       - name: Generate image for novel
         env:
