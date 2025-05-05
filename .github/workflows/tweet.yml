@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install tweepy
+          pip install tweepy openai pillow
 
       - name: Generate image for novel
         env:
