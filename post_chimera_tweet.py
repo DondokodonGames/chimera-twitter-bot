@@ -1,19 +1,21 @@
+# post_chimera_tweet.py 修正版（変数名の不一致を解消）
+
 import os
 import json
 from datetime import datetime
 import tweepy
 
-# Bot を曜日で選択
 def get_bot_identity():
+    """曜日ごとにBotを切り替え：A/B/C"""
     wd = datetime.utcnow().weekday()
-    if wd in [0,2,4]:
-        return 'A','都市裁判くん'
-    if wd in [1,3,5]:
-        return 'B','ささやきノベル'
-    return 'C','観察者Z'
+    if wd in [0, 2, 4]:
+        return 'A', '都市裁判くん'
+    if wd in [1, 3, 5]:
+        return 'B', 'ささやきノベル'
+    return 'C', '観察者Z'
 
-# テンプレ読み込み
-def load_template(key):
+def load_template(bot_key):
+    """templates.jsonからBotキーに対応したテンプレートを読み込む"""
     with open("templates.json", "r", encoding="utf-8") as f:
         data = json.load(f)
     template_data = data.get(bot_key)
@@ -21,15 +23,13 @@ def load_template(key):
         raise RuntimeError(f"No template for '{bot_key}'")
     return template_data["template"].format(**template_data["variables"])
 
-# Tweepy で投稿
 def post_tweet_v2(bot_key, content):
-    # 環境変数から認証情報取得
-    api_key        = os.environ[f"TW_API_KEY_{bot_key}"]
-    api_secret     = os.environ[f"TW_API_SECRET_{bot_key}"]
-    access_token   = os.environ[f"TW_ACCESS_TOKEN_{bot_key}"]
-    access_secret  = os.environ[f"TW_ACCESS_SECRET_{bot_key}"]
+    """Tweepy v2でツイートを投稿"""
+    api_key       = os.environ[f"TW_API_KEY_{bot_key}"]
+    api_secret    = os.environ[f"TW_API_SECRET_{bot_key}"]
+    access_token  = os.environ[f"TW_ACCESS_TOKEN_{bot_key}"]
+    access_secret = os.environ[f"TW_ACCESS_SECRET_{bot_key}"]
 
-    # Clientインスタンス（API v2）
     client = tweepy.Client(
         consumer_key=api_key,
         consumer_secret=api_secret,
