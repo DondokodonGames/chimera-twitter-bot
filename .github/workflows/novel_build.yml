@@ -1,5 +1,10 @@
 name: Build and Deploy CHIMERA Novels
 
+permissions:
+  contents: write    # リポジトリのコード操作権限
+  pages: write       # GitHub Pages 操作権限
+  id-token: write    # peaceiris/actions-gh-pages が必要に応じて OIDC を利用
+  
 on:
   push:
     paths:
