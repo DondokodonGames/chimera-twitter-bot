@@ -45,14 +45,14 @@ def post_tweet_with_media(bot_key, content):
     """画像付きツイートをv1.1 APIで投稿"""
     # OAuth1.0a 認証
     auth_v1 = tweepy.OAuth1UserHandler(
-        os.environ[f"TW_API_KEY_{bot_key}"],
-        os.environ[f"TW_API_SECRET_{bot_key}"],
-        os.environ[f"TW_ACCESS_TOKEN_{bot_key}"],
-        os.environ[f"TW_ACCESS_SECRET_{bot_key}"]
+        os.getenv(f"TW_API_KEY_{bot_key}"),
+        os.getenv(f"TW_API_SECRET_{bot_key}"),
+        os.getenv(f"TW_ACCESS_TOKEN_{bot_key}"),
+        os.getenv(f"TW_ACCESS_SECRET_{bot_key}")
     )
     api_v1 = tweepy.API(auth_v1)
 
-    # images/{bot_key}/latest.png を最新画像として取得
+    # 生成済み画像を最新ファイルとして取得
     imgs = sorted(glob.glob(f"images/{bot_key}/*.png"))
     if not imgs:
         raise RuntimeError(f"No image found for bot {bot_key}")
@@ -63,9 +63,6 @@ def post_tweet_with_media(bot_key, content):
     print(f"[Bot {bot_key}] Tweet with image posted.")
 
 if __name__ == "__main__":
-     bot_key, bot_name = get_bot_identity()
-     text = load_template(bot_name)
-    # 画像付き投稿を優先する場合はこちらを呼び出し
+    bot_key, bot_name = get_bot_identity()
+    text = load_template(bot_name)
     post_tweet_with_media(bot_key, text)
-    # もし画像が不要なときは下記を使ってください
-    # post_tweet_v2(bot_key, text)
