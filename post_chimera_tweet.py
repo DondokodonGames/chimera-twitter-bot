@@ -1,8 +1,8 @@
- import os
- import json
- from datetime import datetime
- import tweepy
- import glob
+import os
+import json
+from datetime import datetime
+import tweepy
+import glob
 
  def get_bot_identity():
      """曜日ごとにBotを切り替え：A/B/Cと名称"""
