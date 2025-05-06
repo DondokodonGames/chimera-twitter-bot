@@ -32,8 +32,8 @@ def build_prompt(vars):
 
 # ④ OpenAI Images API(v1.0+)を使って画像を生成
 def gen_image(prompt, out_path):
-        if DEBUG_MODE:
         # プレースホルダ画像を生成
+        if DEBUG_MODE:
         img = Image.new("RGB", (512, 512), color=(200,200,200))
         draw = ImageDraw.Draw(img)
         text = "DEBUG"
