@@ -5,9 +5,32 @@ import json
 import openai
 from datetime import datetime
 
+# ── ❶ デバッグモードとダミー応答定義 ──────────────────────
+DEBUG_MODE = os.getenv("DEBUG_MODE") == "1"
+
+DUMMY_RESPONSES = {
+    "都市裁判くん": {
+        "log_no": "001",
+        "title": "テスト裁判の証言",
+        "testimony_quality": "完全",
+        "verdict": "無罪"
+    },
+    "ささやきノベル": {
+        "intro": "ねぇ、聞こえる？",
+        "title": "テストの囁き",
+        "ending_line": "あの声は今も耳元で…"
+    },
+    "観察者Z": {
+        "phenomenon": "ダミー現象XYZ",
+        "annotation_1": "これはテスト用の注釈1です。",
+        "annotation_2": "これはテスト用の注釈2です。"
+    }
+}
+# ────────────────────────────────────────────────────────
+
 # OpenAI APIキーを環境変数から取得
 openai.api_key = os.getenv("OPENAI_API_KEY")
-if not openai.api_key:
+if not DEBUG_MODE and not openai.api_key:
     raise RuntimeError("環境変数 OPENAI_API_KEY が設定されていません。")
 
 # Botごとのプロンプト設定
@@ -52,6 +75,12 @@ BOT_PROMPTS = {
 }
 
 def generate_for_bot(bot_name, prompt_conf):
+        if DEBUG_MODE:
+        # ダミー応答をそのまま返す
+        print(f"[{bot_name}] DEBUG_MODE 有効 → ダミー応答を返却")
+        return DUMMY_RESPONSES[bot_name]
+
+    # ── 通常時は本物のAPI呼び出し ────────────────────────
     """OpenAI v1.0+ の Chat Completions API で指定Bot用JSONを生成"""
     response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
