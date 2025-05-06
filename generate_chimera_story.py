@@ -1,5 +1,4 @@
 # generate_chimera_story.py: CHIMERA用ストーリー変数自動生成スクリプト
-
 import os
 import json
 import openai
@@ -45,7 +44,7 @@ BOT_PROMPTS = {
             '  "testimony_quality": "<証言の質：完全／不完全／曖昧など>",\n'
             '  "verdict": "<有罪／無罪など>"\n'
             "}\n"
-            "例) {\"log_no\":\"214\",\"title\":\"逆さ鏡の証言\",\"testimony_quality\":\"不完全\",\"verdict\":\"有罪\"}"
+            "例) {"log_no":"214","title":"逆さ鏡の証言","testimony_quality":"不完全","verdict":"有罪"}"
         )
     },
     "ささやきノベル": {
@@ -57,7 +56,7 @@ BOT_PROMPTS = {
             '  "title": "<短編ノベルのタイトル>",\n'
             '  "ending_line": "<余韻を残す結末の一文>"\n'
             "}\n"
-            "例) {\"intro\":\"ねぇ、これ見たことある？\",\"title\":\"写ルンですの女\",\"ending_line\":\"あのコンビニ、今も営業してるのかな…。\"}"
+            "例) {"intro":"ねぇ、これ見たことある？","title":"写ルンですの女","ending_line":"あのコンビニ、今も営業してるのかな…。"}"
         )
     },
     "観察者Z": {
@@ -69,19 +68,17 @@ BOT_PROMPTS = {
             '  "annotation_1": "<注釈1>",\n'
             '  "annotation_2": "<注釈2>"\n'
             "}\n"
-            "例) {\"phenomenon\":\"眠る者の記憶連鎖\",\"annotation_1\":\"観察のたびに内容が変化する。\",\"annotation_2\":\"選択肢は無効化されています。\"}"
+            "例) {"phenomenon":"眠る者の記憶連鎖","annotation_1":"観察のたびに内容が変化する。","annotation_2":"選択肢は無効化されています。"}"
         )
     }
 }
 
 def generate_for_bot(bot_name, prompt_conf):
-        if DEBUG_MODE:
-        # ダミー応答をそのまま返す
+    '''デバッグモード時はダミー応答、通常はOpenAI APIで生成'''
+    if DEBUG_MODE:
         print(f"[{bot_name}] DEBUG_MODE 有効 → ダミー応答を返却")
         return DUMMY_RESPONSES[bot_name]
 
-    # ── 通常時は本物のAPI呼び出し ────────────────────────
-    """OpenAI v1.0+ の Chat Completions API で指定Bot用JSONを生成"""
     response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
