@@ -40,6 +40,7 @@ jobs:
       - name: Generate image for novel
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEBUG_MODE: "1"
         run: python generate_chimera_image.py
 
       - name: Run CHIMERA tweet with media
