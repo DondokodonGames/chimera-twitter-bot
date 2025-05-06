@@ -4,7 +4,7 @@ from datetime import datetime
 import tweepy
 import glob
 
- def get_bot_identity():
+def get_bot_identity():
      """曜日ごとにBotを切り替え：A/B/Cと名称"""
      wd = datetime.utcnow().weekday()
      if wd in [0, 2, 4]:
@@ -13,7 +13,7 @@ import glob
          return 'B', 'ささやきノベル'
      return 'C', '観察者Z'
 
- def load_template(bot_name):
+def load_template(bot_name):
      """templates.jsonからBot名に対応したテンプレートを読み込む"""
      with open("templates.json", "r", encoding="utf-8") as f:
          data = json.load(f)
@@ -22,7 +22,7 @@ import glob
          raise RuntimeError(f"No template for '{bot_name}'")
      return template_data["template"].format(**template_data["variables"])
 
- def post_tweet_v2(bot_key, content):
+def post_tweet_v2(bot_key, content):
      """Tweepy v2でツイートを投稿"""
      api_key       = os.environ[f"TW_API_KEY_{bot_key}"]
      api_secret    = os.environ[f"TW_API_SECRET_{bot_key}"]
@@ -62,7 +62,7 @@ def post_tweet_with_media(bot_key, content):
     api_v1.update_status(status=content, media_ids=[media.media_id_string])
     print(f"[Bot {bot_key}] Tweet with image posted.")
 
- if __name__ == "__main__":
+if __name__ == "__main__":
      bot_key, bot_name = get_bot_identity()
      text = load_template(bot_name)
     # 画像付き投稿を優先する場合はこちらを呼び出し
