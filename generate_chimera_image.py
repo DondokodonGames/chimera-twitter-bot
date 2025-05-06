@@ -29,7 +29,7 @@ def build_prompt(vars):
 def gen_image(prompt, out_path):
     openai.api_key = os.getenv("OPENAI_API_KEY")
     resp = openai.images.generate(
-        prompt=prompt,
+        prompt="dall-e-2",
         n=1,
         size="512x512",
         response_format="b64_json"
