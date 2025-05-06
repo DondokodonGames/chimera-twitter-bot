@@ -37,7 +37,10 @@ def gen_image(prompt, out_path):
         img = Image.new("RGB", (512, 512), color=(200, 200, 200))
         draw = ImageDraw.Draw(img)
         text = "DEBUG"
-        tw, th = draw.textsize(text)
+        # textbbox で文字サイズを取得
+        bbox = draw.textbbox((0, 0), text)
+        tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        # 文字を中央に描画
         draw.text(((512 - tw) / 2, (512 - th) / 2), text, fill=(50, 50, 50))
         img.save(out_path)
         print(f"[DEBUG] Placeholder image saved → {out_path}")
