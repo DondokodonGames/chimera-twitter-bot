@@ -7,8 +7,8 @@ from PIL import Image, ImageDraw
 from io import BytesIO
 import base64
 
-# デバッグモードフラグ
-DEBUG_MODE = os.getenv("DEBUG_MODE") == "1"
+# デバッグモードフラグ: DEBUG_MODE=1 または OPENAI_API_KEY が設定されていなければデバッグ
++DEBUG_MODE = os.getenv("DEBUG_MODE") == "1" or not bool(os.getenv("OPENAI_API_KEY"))
 
 # OpenAI APIキー設定（DEBUG_MODE時は不要）
 openai.api_key = os.getenv("OPENAI_API_KEY")
