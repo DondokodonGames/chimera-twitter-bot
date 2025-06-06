@@ -20,7 +20,7 @@
       "image": "{AUTO_IMAGE}"
     }
   },
-  "観察者Z": {
+  "観測者Z": {
     "template": "【観測ログ{log_no}】\\n\\n現象記録：「{phenomenon}」\\n\\n※{annotation_1}\\n※{annotation_2}\\n\\n#思考実験 #構造変異ノベル #観察対象\\n🔗 {link}\\n🖼 {image}",
     "variables": {
       "log_no": "{AUTO_LOG_NO}",
@@ -37,96 +37,17 @@
     "initial_bgm_state": true,
     "initial_font_class": "font-serif",
     "font_options": [
-      {
-        "label": "明朝体",
-        "class": "font-serif"
-      },
-      {
-        "label": "ゴシック",
-        "class": "font-sans"
-      },
-      {
-        "label": "等幅フォント",
-        "class": "font-mono"
-      }
+      { "label": "明朝体", "class": "font-serif" },
+      { "label": "ゴシック", "class": "font-sans" },
+      { "label": "等幅フォント", "class": "font-mono" }
     ]
   },
   "games": {
     "都市裁判": {
       "scenario_variables": {},
-      "chapters": [
-        {
-          "id": "title",
-          "title": "タイトル画面",
-          "bgm": "assets/audio/court_title.mp3",
-          "bg_image": "assets/img/title_screen.png",
-          "font_class": "font-serif",
-          "texts": [
-            "――CHIMERA 都市裁判――",
-            "画面をクリックして開始"
-          ],
-          "choices": []
-        },
-        {
-          "id": "explanation",
-          "title": "事件の説明",
-          "bgm": "assets/audio/court_explain.mp3",
-          "bg_image": "assets/img/court_entrance.png",
-          "font_class": "font-serif",
-          "texts": [
-            "事件名：\"{{ case_name }}\"",
-            "ここ数日、奇妙な現象が続出している……"
-          ],
-          "choices": []
-        },
-        {
-          "id": "testimony",
-          "title": "証言パート",
-          "bgm": "assets/audio/court_testimony.mp3",
-          "bg_image": "assets/img/witness_dot.png",
-          "font_class": "font-serif",
-          "texts": [
-            "目撃者：\"{{ testimony_text }}\""
-          ],
-          "choices": []
-        },
-        {
-          "id": "evidence",
-          "title": "証拠品提示",
-          "bgm": "assets/audio/court_rebuttal.mp3",
-          "bg_image": "assets/img/evidence_icon.png",
-          "font_class": "font-serif",
-          "texts": [
-            "あなたは証拠品「{{ evidence_item }}」を差し出した。"
-          ],
-          "choices": []
-        },
-        {
-          "id": "verdict",
-          "title": "判決パート",
-          "bgm": "assets/audio/court_verdict.mp3",
-          "bg_image": "assets/img/verdict_court.png",
-          "font_class": "font-serif",
-          "texts": [
-            "矛盾点：\"{{ contradiction_point }}\"",
-            "――判決：\"{{ verdict }}\"",
-            "真相は明らかになり、あなたの裁判は幕を閉じた。"
-          ],
-          "choices": []
-        },
-        {
-          "id": "ending",
-          "title": "エンディング",
-          "bgm": "assets/audio/case_closed.mp3",
-          "bg_image": "assets/img/case_closed.png",
-          "font_class": "font-serif",
-          "texts": [
-            "――CASE CLOSED――",
-            "（リプレイまたは次の事件へ）"
-          ],
-          "choices": []
-        }
-      ]
+      "testimonies": [],
+      "evidence_items": [],
+      "correct_index": 0
     },
     "ささやきノベル": {
       "scenario_variables": {},
@@ -165,18 +86,9 @@
             "次の中から１つプレゼントを選んでください："
           ],
           "choices": [
-            {
-              "text": "{{ present_list[0] }}",
-              "next_id": "reaction"
-            },
-            {
-              "text": "{{ present_list[1] }}",
-              "next_id": "reaction"
-            },
-            {
-              "text": "{{ present_list[2] }}",
-              "next_id": "reaction"
-            }
+            { "text": "{{ present_list[0] }}", "next_id": "reaction" },
+            { "text": "{{ present_list[1] }}", "next_id": "reaction" },
+            { "text": "{{ present_list[2] }}", "next_id": "reaction" }
           ]
         },
         {
