@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CHIMERA 都市裁判 - {{ case.case_name }}</title>
+    <link rel="stylesheet" href="/assets/css/novel.css" />
+    <style>
+        /* 必要に応じて、ここでtrialページ固有のCSSを上書きできます */
+    </style>
+</head>
+<body class="novel-body font-serif">
+    <div class="game-container">
+        <!-- Header: Case Title and Overview -->
+        <div class="court-header">
+            <div class="case-title">第{{ case.episode }}話「{{ case.case_name }}」</div>
+            <div style="margin: 10px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; font-size: 16px; line-height: 1.5;">
+                <strong>📋 事件概要</strong><br>
+                {{ case.case_overview }}
+            </div>
+            <div>証人の証言を聞いて、証拠品で矛盾を突いてみよう！</div>
+        </div>
+
+        <!-- Phase Indicator -->
+        <div class="phase-indicator">
+            📢 証言フェーズ - 証人の話を聞いて矛盾を探そう
+        </div>
+
+        <div class="main-content">
+            <!-- Character Section -->
+            <div class="character-section">
+                <div class="character-display pixelart">
+                    {{ case.witness_icon }}
+                </div>
+                <div class="character-name">{{ case.witness_name }}</div>
+                <div class="character-description">
+                    {{ case.witness_description }}
+                </div>
+            </div>
+
+            <!-- Testimony Display -->
+            <div class="testimony-display">
+                <div class="testimony-counter">
+                    <span id="current-testimony">1</span> / <span id="total-testimony">{{ testimonies | length }}</span>
+                </div>
+                <div class="testimony-text" id="testimony-text">
+                    {{ testimonies[0].text }}
+                </div>
+                <div class="testimony-navigation">
+                    <button class="nav-btn" id="prev-btn" onclick="previousTestimony()">◀ 前</button>
+                    <button class="btn btn-evidence" onclick="showEvidence()" style="padding: 8px 16px; margin: 0 10px; font-size: 14px;">📋 証拠品をつきつける</button>
+                    <button class="nav-btn" id="next-btn" onclick="nextTestimony()">次 ▶</button>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div class="result-section" id="result">
+                <div id="result-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Evidence Modal -->
+    <div class="evidence-modal" id="evidence-modal">
+        <div class="evidence-content">
+            <div class="evidence-header">
+                <div class="evidence-title">📋 証拠品を選んでつきつけよう</div>
+                <button class="close-btn" onclick="closeEvidence()">×</button>
+            </div>
+            {% for evidence in evidence_items %}
+            <div class="evidence-item" data-evidence="{{ evidence.key }}">
+                <div class="evidence-name">{{ evidence.icon }} {{ evidence.name }}</div>
+                <div class="evidence-description">{{ evidence.description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const testimonies = {{ testimonies | tojson }};
+        const evidenceItems = {{ evidence_items | tojson }};
+        const correctIndex = {{ correct_index }};
+        let currentTestimonyIndex = 0;
+        let selectedEvidence = null;
+
+        function updateTestimonyDisplay() {
+            const testimonyText = document.getElementById('testimony-text');
+            const newText = testimonies[currentTestimonyIndex].text;
+            testimonyText.classList.add('typing');
+            testimonyText.textContent = newText;
+            setTimeout(() => {
+                testimonyText.classList.remove('typing');
+            }, 2000);
+            document.getElementById('current-testimony').textContent = currentTestimonyIndex + 1;
+            document.getElementById('total-testimony').textContent = testimonies.length;
+            document.getElementById('prev-btn').disabled = currentTestimonyIndex === 0;
+            document.getElementById('next-btn').disabled = currentTestimonyIndex === testimonies.length - 1;
+            const testimonyDisplay = document.querySelector('.testimony-display');
+            if (testimonies[currentTestimonyIndex].contradiction) {
+                testimonyDisplay.classList.add('highlight-contradiction');
+                setTimeout(() => {
+                    testimonyDisplay.classList.remove('highlight-contradiction');
+                }, 1500);
+            }
+        }
+
+        function addSoundEffect(text) {
+            const soundDiv = document.createElement('div');
+            soundDiv.className = 'sound-effect';
+            soundDiv.textContent = text;
+            document.body.appendChild(soundDiv);
+            setTimeout(() => {
+                document.body.removeChild(soundDiv);
+            }, 1000);
+        }
+
+        function shakeCharacter() {
+            const character = document.querySelector('.character-display');
+            character.classList.add('shaking');
+            setTimeout(() => {
+                character.classList.remove('shaking');
+            }, 500);
+        }
+
+        function makeCharacterSweat() {
+            const character = document.querySelector('.character-display');
+            character.classList.add('sweating');
+            setTimeout(() => {
+                character.classList.remove('sweating');
+            }, 3000);
+        }
+
+        function previousTestimony() {
+            if (currentTestimonyIndex > 0) {
+                currentTestimonyIndex--;
+                updateTestimonyDisplay();
+            }
+        }
+
+        function nextTestimony() {
+            if (currentTestimonyIndex < testimonies.length - 1) {
+                currentTestimonyIndex++;
+                updateTestimonyDisplay();
+            }
+        }
+
+        function showEvidence() {
+            document.getElementById('evidence-modal').classList.add('show');
+        }
+
+        function closeEvidence() {
+            document.getElementById('evidence-modal').classList.remove('show');
+        }
+
+        document.querySelectorAll('.evidence-item').forEach(item => {
+            item.addEventListener('click', function() {
+                selectedEvidence = this.dataset.evidence;
+                closeEvidence();
+                presentEvidence();
+            });
+        });
+
+        function presentEvidence() {
+            if (!selectedEvidence) return;
+            if (currentTestimonyIndex === correctIndex && selectedEvidence === testimonies[correctIndex].contradiction) {
+                addSoundEffect('異議あり！');
+                shakeCharacter();
+                makeCharacterSweat();
+                setTimeout(() => {
+                    showCharacterReaction('{{ case.witness_name }}: ' + testimonies[correctIndex].full_reveal, 'nervous');
+                    showResult('🎉 事件解決！\n\n' + testimonies[correctIndex].verdict + '\n\n真実が明らかになりました！', 'success');
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    showCharacterReaction('{{ case.witness_name }}: ' + testimonies[currentTestimonyIndex].false_reaction, 'normal');
+                    showResult('この証拠品は矛盾を証明しませんでした。\n\n他の証言や証拠品を試してください。', 'failure');
+                }, 500);
+            }
+            selectedEvidence = null;
+        }
+
+        function showCharacterReaction(text, mood) {
+            const reactionDiv = document.createElement('div');
+            reactionDiv.className = `character-reaction ${mood}`;
+            reactionDiv.innerHTML = `<strong>{{ case.witness_name }}:</strong> 「${text}」`;
+            const characterSection = document.querySelector('.character-section');
+            const existingReaction = characterSection.querySelector('.character-reaction');
+            if (existingReaction) existingReaction.remove();
+            characterSection.appendChild(reactionDiv);
+        }
+
+        function showResult(text, type) {
+            const resultSection = document.getElementById('result');
+            const resultText = document.getElementById('result-text');
+            resultText.style.whiteSpace = 'pre-line';
+            resultText.textContent = text;
+            resultSection.className = `result-section show ${type}`;
+        }
+
+        document.getElementById('evidence-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeEvidence();
+        });
+
+        updateTestimonyDisplay();
+    </script>
+</body>
+</html>
