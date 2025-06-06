@@ -1,0 +1,82 @@
+/* novel.css */
+body.novel-body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333333;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 10px 20px;
+}
+.title-area .logo {
+    height: 40px;
+}
+.bgm-controls button {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+.main-content {
+    padding: 20px;
+}
+.chapter {
+    display: none;
+}
+.chapter.active {
+    display: block;
+}
+.footer-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f5f5f5;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.nav-button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+.choices {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+.choices .choice-button {
+    margin: 0 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    padding: 20px;
+    z-index: 1000;
+}
+.modal.hidden {
+    display: none;
+}
+.font-serif { font-family: 'Hiragino Mincho Pro', serif; }
+.font-sans { font-family: 'Hiragino Sans', sans-serif; }
+.font-mono { font-family: 'Courier New', monospace; }
+
+@media (max-width: 600px) {
+    body.novel-body {
+        font-size: 16px;
+    }
+    .nav-button, .choices .choice-button {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}

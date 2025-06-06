@@ -1,162 +1,54 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ story.title }} - CHIMERA Novel</title>
-    <link rel="stylesheet" href="../assets/css/novel-base.css">
-    <link rel="stylesheet" href="../assets/css/themes/{{ bot_theme }}.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>{{ story_title }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/assets/css/novel.css" />
 </head>
-<body class="theme-{{ bot_id }}">
-    <!-- メインコンテナ -->
-    <div id="novel-container" class="novel-container">
-        <!-- ヘッダー -->
-        <header class="novel-header">
-            <div class="header-content">
-                <h1 class="novel-title">{{ story.title }}</h1>
-                <div class="header-controls">
-                    <button id="menu-btn" class="control-btn">≡</button>
-                    <button id="save-btn" class="control-btn">💾</button>
-                    <button id="audio-btn" class="control-btn">🔊</button>
-                </div>
-            </div>
-        </header>
-
-        <!-- プログレスバー -->
-        <div class="progress-container">
-            <div id="progress-bar" class="progress-bar"></div>
-            <span id="progress-text" class="progress-text">1 / {{ story.chapters|length }}</span>
-        </div>
-
-        <!-- メインコンテンツエリア -->
-        <main class="story-content">
-            <!-- チャプター表示エリア -->
-            <div id="chapter-container" class="chapter-container">
-                {% for chapter in story.chapters %}
-                <section class="chapter" id="chapter-{{ loop.index }}" 
-                         data-chapter="{{ loop.index }}"
-                         {% if loop.first %}style="display: block;"{% else %}style="display: none;"{% endif %}>
-                    
-                    <!-- チャプタータイトル -->
-                    {% if chapter.title %}
-                    <h2 class="chapter-title">{{ chapter.title }}</h2>
-                    {% endif %}
-
-                    <!-- 背景画像 -->
-                    {% if chapter.background_image %}
-                    <div class="chapter-bg" style="background-image: url('{{ chapter.background_image }}');"></div>
-                    {% endif %}
-
-                    <!-- キャラクター立ち絵 -->
-                    {% if chapter.character_image %}
-                    <div class="character-sprite">
-                        <img src="{{ chapter.character_image }}" alt="{{ chapter.character_name }}" class="character-img">
-                    </div>
-                    {% endif %}
-
-                    <!-- テキストボックス -->
-                    <div class="text-box">
-                        {% if chapter.speaker %}
-                        <div class="speaker-name">{{ chapter.speaker }}</div>
-                        {% endif %}
-                        
-                        <div class="story-text" data-text="{{ chapter.text }}">
-                            <!-- テキストはJSで1文字ずつ表示 -->
-                        </div>
-
-                        <!-- 選択肢 -->
-                        {% if chapter.choices %}
-                        <div class="choices-container" style="display: none;">
-                            {% for choice in chapter.choices %}
-                            <button class="choice-btn" data-target="{{ choice.target_chapter }}">
-                                {{ choice.text }}
-                            </button>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- BGM設定 -->
-                    {% if chapter.bgm %}
-                    <audio data-bgm="{{ chapter.bgm }}" preload="auto"></audio>
-                    {% endif %}
-                </section>
-                {% endfor %}
-            </div>
-
-            <!-- ナビゲーションコントロール -->
-            <div class="nav-controls">
-                <button id="prev-btn" class="nav-btn prev-btn" disabled>◀ 戻る</button>
-                <button id="next-btn" class="nav-btn next-btn">次へ ▶</button>
-                <button id="auto-btn" class="nav-btn auto-btn">自動</button>
-            </div>
-        </main>
-
-        <!-- サイドメニュー -->
-        <aside id="side-menu" class="side-menu">
-            <div class="menu-content">
-                <h3>メニュー</h3>
-                <button class="menu-item" id="chapter-list-btn">チャプター一覧</button>
-                <button class="menu-item" id="settings-btn">設定</button>
-                <button class="menu-item" id="restart-btn">最初から</button>
-                <button class="menu-item" id="close-menu-btn">閉じる</button>
-            </div>
-        </aside>
-
-        <!-- 設定パネル -->
-        <div id="settings-panel" class="settings-panel">
-            <div class="settings-content">
-                <h3>設定</h3>
-                <div class="setting-group">
-                    <label>テキスト速度</label>
-                    <input type="range" id="text-speed" min="1" max="5" value="3">
-                </div>
-                <div class="setting-group">
-                    <label>BGM音量</label>
-                    <input type="range" id="bgm-volume" min="0" max="100" value="50">
-                </div>
-                <div class="setting-group">
-                    <label>フォントサイズ</label>
-                    <select id="font-size">
-                        <option value="small">小</option>
-                        <option value="medium" selected>中</option>
-                        <option value="large">大</option>
-                    </select>
-                </div>
-                <button id="close-settings-btn" class="close-btn">閉じる</button>
-            </div>
-        </div>
-
-        <!-- ローディング画面 -->
-        <div id="loading-screen" class="loading-screen">
-            <div class="loading-content">
-                <div class="spinner"></div>
-                <p>読み込み中...</p>
-            </div>
-        </div>
+<body class="novel-body {{ initial_font_class }}">
+  <header class="header">
+    <div class="title-area">
+      {% if logo_image %}
+        <img src="{{ logo_image }}" alt="ロゴ" class="logo" />
+      {% else %}
+        <h1>{{ story_title }}</h1>
+      {% endif %}
     </div>
+    <div class="bgm-controls">
+      <button id="bgm-toggle">
+        {{ "BGM ON" if initial_bgm_state else "BGM OFF" }}
+      </button>
+    </div>
+  </header>
 
-    <!-- スクリプト -->
-    <script>
-        // 初期化データ
-        window.NOVEL_DATA = {
-            botId: '{{ bot_id }}',
-            storyData: {{ story | tojson }},
-            totalChapters: {{ story.chapters|length }},
-            currentChapter: 1,
-            autoPlayEnabled: false,
-            settings: {
-                textSpeed: 3,
-                bgmVolume: 50,
-                fontSize: 'medium'
-            }
-        };
+  <main class="main-content">
+    <script id="story-data" type="application/json">
+      {{ chapters | tojson }}
     </script>
-    <script src="../assets/js/audio-manager.js"></script>
-    <script src="../assets/js/save-manager.js"></script>
-    <script src="../assets/js/novel-engine.js"></script>
+    <div id="chapter-container"></div>
+  </main>
+
+  <footer class="footer-nav">
+    <button id="prev-button" class="nav-button" disabled>前へ</button>
+    <div id="choices-container" class="choices"></div>
+    <button id="next-button" class="nav-button" disabled>次へ</button>
+  </footer>
+
+  <div id="font-selector" class="modal hidden">
+    <h2>フォント選択</h2>
+    <ul>
+      {% for font_option in font_options %}
+      <li>
+        <button class="font-btn" data-font="{{ font_option.class }}">
+          {{ font_option.label }}
+        </button>
+      </li>
+      {% endfor %}
+    </ul>
+    <button id="font-close">閉じる</button>
+  </div>
+
+  <script src="/assets/js/novel.js"></script>
 </body>
 </html>

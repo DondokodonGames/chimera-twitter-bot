@@ -2,45 +2,29 @@ import os
 import json
 from jinja2 import Environment, FileSystemLoader
 
-# Bot名から出力ディレクトリキーへのマッピング
-BOT_DIR_MAP = {
-    "都市裁判くん": "A",
-    "ささやきノベル": "B",
-    "観察者Z": "C"
-}
+# Load templates.json
+with open("templates.json", "r", encoding="utf-8") as f:
+    templates = json.load(f)
 
-def main():
-    # templates.json をロード
-    with open("templates.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
+# Existing Bot HTML generation logic (not shown) can remain here.
 
-    # Jinja2 環境設定
-    env = Environment(loader=FileSystemLoader("novel_templates"))
+# Novel game HTML generation
+format_conf = templates.get("format_config", {})
+all_games = templates.get("games", {})
 
-    # 出力先ディレクトリ
-    publish_dir = "public"
-    os.makedirs(publish_dir, exist_ok=True)
+env = Environment(loader=FileSystemLoader("novel_templates"))
+template = env.get_template("novel.html.j2")
 
-    # 各 Bot ごとに HTML をビルド
-    for bot_name, tpl in data.items():
-        dir_key = BOT_DIR_MAP.get(bot_name)
-        if not dir_key:
-            print(f"Warning: No mapping for {bot_name}, using name as directory")
-            dir_key = bot_name
-
-        title = tpl["variables"].get("title", bot_name)
-        context = {
-            "title": title,
-            "variables": tpl["variables"]
-        }
-
-        html = env.get_template("novel.html.j2").render(context)
-        out_dir = os.path.join(publish_dir, dir_key)
-        os.makedirs(out_dir, exist_ok=True)
-        with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
-            f.write(html)
-
-        print(f"Built novel for {bot_name} → {out_dir}/index.html")
-
-if __name__ == "__main__":
-    main()
+for game_name, game_info in all_games.items():
+    out_dir = os.path.join("public", "novel", game_name)
+    os.makedirs(out_dir, exist_ok=True)
+    rendered = template.render(
+        story_title=f"CHIMERA {game_name}",
+        logo_image=format_conf.get("logo_image"),
+        initial_bgm_state=format_conf.get("initial_bgm_state", True),
+        initial_font_class=format_conf.get("initial_font_class", ""),
+        font_options=format_conf.get("font_options", []),
+        chapters=game_info.get("chapters", [])
+    )
+    with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(rendered)

@@ -1,6 +1,6 @@
 {
   "都市裁判くん": {
-    "template": "【審理ログNo.{log_no}】\nあなたが見逃した都市伝説「{title}」について、裁判が開かれました。\n\n証言は{testimony_quality}でしたが、結論は出ました。\n\n▶ 判決：{verdict}\n\n#裁判ノベル #夢構造 #AI創作\n🔗 {link}\n🖼 {image}",
+    "template": "【審理ログNo.{log_no】\\nあなたが見逃した都市伝説「{title}」について、裁判が開かれました。\\n\\n証言は{testimony_quality}でしたが、結論は出ました。\\n\\n▶ 判決：{verdict}\\n\\n#裁判ノベル #夢構造 #AI創作\\n🔗 {link}\\n🖼 {image}",
     "variables": {
       "log_no": "{AUTO_LOG_NO}",
       "title": "{AUTO_TITLE}",
@@ -11,7 +11,7 @@
     }
   },
   "ささやきノベル": {
-    "template": "「{intro}」\n\n▶ 短編ノベル：『{title}』\n\n{ending_line}\n\n#都市伝説 #深夜ノベル #CHIMERA\n🔗 {link}\n🖼 {image}",
+    "template": "「{intro}」\\n\\n▶ 短編ノベル：『{title}』\\n\\n{ending_line}\\n\\n#都市伝説 #深夜ノベル #CHIMERA\\n🔗 {link}\\n🖼 {image}",
     "variables": {
       "intro": "{AUTO_INTRO}",
       "title": "{AUTO_TITLE}",
@@ -21,7 +21,7 @@
     }
   },
   "観察者Z": {
-    "template": "【観測ログ{log_no}】\n\n現象記録：「{phenomenon}」\n\n※{annotation_1}\n※{annotation_2}\n\n#思考実験 #構造変異ノベル #観察対象\n🔗 {link}\n🖼 {image}",
+    "template": "【観測ログ{log_no}】\\n\\n現象記録：「{phenomenon}」\\n\\n※{annotation_1}\\n※{annotation_2}\\n\\n#思考実験 #構造変異ノベル #観察対象\\n🔗 {link}\\n🖼 {image}",
     "variables": {
       "log_no": "{AUTO_LOG_NO}",
       "phenomenon": "{AUTO_PHENOMENON}",
@@ -29,6 +29,203 @@
       "annotation_2": "{AUTO_ANN2}",
       "link": "{AUTO_LINK}",
       "image": "{AUTO_IMAGE}"
+    }
+  },
+  "format_config": {
+    "story_title": "CHIMERA ノベルシリーズ",
+    "logo_image": "assets/img/logo.png",
+    "initial_bgm_state": true,
+    "initial_font_class": "font-serif",
+    "font_options": [
+      {
+        "label": "明朝体",
+        "class": "font-serif"
+      },
+      {
+        "label": "ゴシック",
+        "class": "font-sans"
+      },
+      {
+        "label": "等幅フォント",
+        "class": "font-mono"
+      }
+    ]
+  },
+  "games": {
+    "都市裁判": {
+      "scenario_variables": {},
+      "chapters": [
+        {
+          "id": "trial",
+          "title": "審理パート",
+          "bgm": "assets/audio/court_drama.mp3",
+          "bg_image": "assets/img/courtroom.png",
+          "font_class": "font-serif",
+          "texts": [
+            "――本日の事件は「{{ case_name }}」。",
+            "証言：\"{{ testimony_text }}\""
+          ],
+          "choices": []
+        },
+        {
+          "id": "rebuttal",
+          "title": "反論パート",
+          "bgm": "assets/audio/tense.mp3",
+          "bg_image": "assets/img/evidence_table.png",
+          "font_class": "font-serif",
+          "texts": [
+            "あなたは手に持つ証拠品「{{ evidence_item }}」を提示した。",
+            "\"{{ contradiction_point }}\""
+          ],
+          "choices": []
+        },
+        {
+          "id": "verdict",
+          "title": "判決パート",
+          "bgm": "assets/audio/victory.mp3",
+          "bg_image": "assets/img/judgment.png",
+          "font_class": "font-serif",
+          "texts": [
+            "――判決：\"{{ verdict }}\"",
+            "真相は明らかになり、あなたの裁判は幕を閉じた。"
+          ],
+          "choices": []
+        }
+      ]
+    },
+    "ささやきノベル": {
+      "scenario_variables": {},
+      "chapters": [
+        {
+          "id": "intro",
+          "title": "はじめに",
+          "bgm": "assets/audio/romance_intro.mp3",
+          "bg_image": "assets/img/park_evening.png",
+          "font_class": "font-sans",
+          "texts": [
+            "あなたは街角で{{ protagonist_gender }}と出会った。",
+            "彼女／彼にはたくさんのプレゼントがあるようだ。"
+          ],
+          "choices": [
+            {
+              "text": "どれを選ぶ？",
+              "next_id": "gift_selection"
+            }
+          ]
+        },
+        {
+          "id": "gift_selection",
+          "title": "プレゼント選択",
+          "bgm": null,
+          "bg_image": "assets/img/present_table.png",
+          "font_class": "font-sans",
+          "texts": [
+            "以下の中から１つプレゼントを選んでください："
+          ],
+          "choices": [
+            {
+              "text": "{{ present_list[0] }}",
+              "next_id": "affection"
+            },
+            {
+              "text": "{{ present_list[1] }}",
+              "next_id": "affection"
+            },
+            {
+              "text": "{{ present_list[2] }}",
+              "next_id": "affection"
+            }
+          ]
+        },
+        {
+          "id": "affection",
+          "title": "好感度アップ",
+          "bgm": "assets/audio/romance_bg.mp3",
+          "bg_image": "assets/img/romance_scene.png",
+          "font_class": "font-sans",
+          "texts": [
+            "{{ affection_line }}",
+            "あなたの思いは相手に届いたらしい。"
+          ],
+          "choices": []
+        }
+      ]
+    },
+    "観測者Z": {
+      "scenario_variables": {},
+      "chapters": [
+        {
+          "id": "room_intro",
+          "title": "閉ざされた部屋",
+          "bgm": "assets/audio/ambient1.mp3",
+          "bg_image": "assets/img/dark_room.png",
+          "font_class": "font-mono",
+          "texts": [
+            "{{ room_description }}",
+            "周囲を見渡すと、以下のアイテムがある："
+          ],
+          "choices": [
+            {
+              "text": "{{ key_items[0] }} を見る",
+              "next_id": "item1"
+            },
+            {
+              "text": "{{ key_items[1] }} を見る",
+              "next_id": "item2"
+            },
+            {
+              "text": "{{ key_items[2] }} を見る",
+              "next_id": "item3"
+            }
+          ]
+        },
+        {
+          "id": "item1",
+          "title": "アイテム確認①",
+          "bgm": null,
+          "bg_image": "assets/img/item1.png",
+          "font_class": "font-mono",
+          "texts": [
+            "あなたは「{{ key_items[0] }}」を手に取った。",
+            "何かヒントになりそうだ……"
+          ],
+          "choices": [
+            {
+              "text": "続ける",
+              "next_id": "item2"
+            }
+          ]
+        },
+        {
+          "id": "item2",
+          "title": "アイテム確認②",
+          "bgm": null,
+          "bg_image": "assets/img/item2.png",
+          "font_class": "font-mono",
+          "texts": [
+            "あなたは「{{ key_items[1] }}」を手に取った。",
+            "別のヒントが見えてきた。"
+          ],
+          "choices": [
+            {
+              "text": "続ける",
+              "next_id": "item3"
+            }
+          ]
+        },
+        {
+          "id": "item3",
+          "title": "脱出ステップ",
+          "bgm": "assets/audio/escape.mp3",
+          "bg_image": "assets/img/escape_route.png",
+          "font_class": "font-mono",
+          "texts": [
+            "{{ escape_steps }}",
+            "あなたはついに脱出に成功した。"
+          ],
+          "choices": []
+        }
+      ]
     }
   }
 }
