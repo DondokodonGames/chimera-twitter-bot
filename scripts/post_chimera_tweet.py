@@ -17,7 +17,9 @@ def main():
     with open("templates.json", "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    tweet_template = data.get(game_type, {})
+    # Adjust key for "都市裁判" to match "都市裁判くん"
+    key = "都市裁判くん" if game_type == "都市裁判" else game_type
+    tweet_template = data.get(key, {})
     link = f"https://<your_github_pages_url>/novel/{game_type}/"
     image_path = tweet_template.get("variables", {}).get("image", "")
 

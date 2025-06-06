@@ -10,13 +10,13 @@
   <header class="header">
     <div class="title-area">
       {% if logo_image %}
-        <img src="{{ logo_image }}" alt="ロゴ" class="logo" />
+        <img src="{{ logo_image }}" alt="ロゴ" class="logo pixelart" />
       {% else %}
-        <h1>{{ story_title }}</h1>
+        <h1 class="pixel-font">{{ story_title }}</h1>
       {% endif %}
     </div>
     <div class="bgm-controls">
-      <button id="bgm-toggle">
+      <button id="bgm-toggle" class="pixel-button">
         {{ "BGM ON" if initial_bgm_state else "BGM OFF" }}
       </button>
     </div>
@@ -30,23 +30,24 @@
   </main>
 
   <footer class="footer-nav">
-    <button id="prev-button" class="nav-button" disabled>前へ</button>
+    <button id="prev-button" class="nav-button pixel-button" disabled>前へ</button>
     <div id="choices-container" class="choices"></div>
-    <button id="next-button" class="nav-button" disabled>次へ</button>
+    <button id="next-button" class="nav-button pixel-button" disabled>次へ</button>
   </footer>
 
+  <!-- フォント選択モーダル -->
   <div id="font-selector" class="modal hidden">
-    <h2>フォント選択</h2>
+    <h2 class="pixel-font">フォント選択</h2>
     <ul>
       {% for font_option in font_options %}
       <li>
-        <button class="font-btn" data-font="{{ font_option.class }}">
+        <button class="font-btn pixel-button" data-font="{{ font_option.class }}">
           {{ font_option.label }}
         </button>
       </li>
       {% endfor %}
     </ul>
-    <button id="font-close">閉じる</button>
+    <button id="font-close" class="pixel-button">閉じる</button>
   </div>
 
   <script src="/assets/js/novel.js"></script>

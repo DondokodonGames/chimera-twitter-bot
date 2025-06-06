@@ -17,7 +17,7 @@ def generate_scenario(game_type):
 • 判決
 JSON形式で返してください:
 {
-  "case_name": "事件名テキスト",
+  "case_name": "イベント名テキスト",
   "testimony_text": "目撃者の証言文",
   "evidence_item": "証拠品名",
   "contradiction_point": "矛盾点を示す一文",
@@ -29,9 +29,8 @@ JSON形式で返してください:
 主人公が異性にプレゼントを贈って好感度を上げる短編ストーリーを作成してください。
 JSON形式で返してください:
 {
-  "protagonist_gender": "girl or boy",
+  "protagonist_desc": "男の子または女の子のテキスト",
   "present_list": ["花束", "チョコレート", "アクセサリー"],
-  "chosen_present": "チョコレート",
   "affection_line": "好感度上昇メッセージ"
 }
 """
@@ -40,7 +39,6 @@ JSON形式で返してください:
 短時間でプレイヤーが脱出できるよう、次の要素をJSON形式で返してください:
 {
   "room_description": "部屋の説明文",
-  "key_items": ["アイテム1", "アイテム2", "アイテム3"],
   "escape_steps": "脱出手順"
 }
 """
@@ -65,15 +63,13 @@ JSON形式で返してください:
         }
     elif game_type == "ささやきノベル":
         return {
-            "protagonist_gender": "girl",
+            "protagonist_desc": "女の子",
             "present_list": ["花束", "チョコレート", "アクセサリー"],
-            "chosen_present": "チョコレート",
             "affection_line": "彼女はあなたのチョコレートに微笑んだ。"
         }
     elif game_type == "観測者Z":
         return {
             "room_description": "薄暗い倉庫の中、錆びた扉がわずかに開いている。",
-            "key_items": ["ドライバー", "古い鍵", "紙飛行機"],
             "escape_steps": "ドライバーで通気口を外し、鍵を使って扉を開ける。"
         }
     return {}
@@ -92,7 +88,7 @@ def main():
         for chap in chapters:
             for k, v in scenario.items():
                 chap["texts"] = [line.replace(f"{{{{ {k} }}}}", v) for line in chap["texts"]]
-                if "choices" in chap:
+                if chap.get("choices"):
                     for choice in chap["choices"]:
                         choice["text"] = choice["text"].replace(f"{{{{ {k} }}}}", v)
 
