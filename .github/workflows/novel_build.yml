@@ -2,7 +2,7 @@ name: Build and Deploy CHIMERA Novels
 
 permissions:
   contents: write    # リポジトリのコード操作権限
-  pages: write       # GitHub Pages 操作権限
+  pages:   write    # GitHub Pages 操作権限
   id-token: write    # peaceiris/actions-gh-pages が必要に応じて OIDC を利用
   
 on:
@@ -10,20 +10,60 @@ on:
     paths:
       - 'templates.json'
       - 'novel_templates/**'
+      - 'scripts/generate_chimera_story.py'
+      - 'scripts/generate_chimera_image.py'
+      - 'novel_templates/static/**'
+      - 'build_novel_html.py'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # ─── 1. Python 環境セットアップ & 依存関係インストール ─────────────────────
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - name: Install dependencies
-        run: pip install jinja2
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          # 既存で jinja2 を使っている前提なので残しつつ、
+          # 今後必要なライブラリは requirements.txt で管理
+          pip install jinja2
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # ─── 2. CHIMERA ストーリー／画像生成 ─────────────────────────────
+      - name: Generate CHIMERA story variables
+        working-directory: ./scripts
+        run: python generate_chimera_story.py
+
+      - name: Generate CHIMERA images
+        working-directory: ./scripts
+        run: python generate_chimera_image.py
+
+      # ─── 3. HTML ノベルのビルド ─────────────────────────────────
       - name: Build novel HTML
         run: python build_novel_html.py
+
+      # ─── 4. 静的アセットのコピー（CSS/JS/画像/音声） ────────────────────
+      - name: Copy static assets
+        run: |
+          # public/assets 以下を作成
+          mkdir -p public/assets/css public/assets/js public/assets/img public/assets/audio
+
+          # novel_templates/static 配下のファイルをコピー
+          cp -r novel_templates/static/css/novel.css public/assets/css/
+          cp -r novel_templates/static/js/novel.js public/assets/js/
+          cp -r novel_templates/static/img/* public/assets/img/
+          cp -r novel_templates/static/audio/* public/assets/audio/
+
+      # ─── 5. GitHub Pages へデプロイ ─────────────────────────────────
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
